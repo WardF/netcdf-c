@@ -5,9 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Included Actions
-        - uses: actions/checkout@v2
-          env:
-            TEST_VAR="Test Var"
+        uses: actions/checkout@v2
+        env:
+          TEST_VAR="Test Var"
       - name: Query System
         run: whoami
         run: uname -a
