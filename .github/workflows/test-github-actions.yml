@@ -4,13 +4,13 @@ jobs:
   install-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Included Actions
-        uses: actions/checkout@v2
-      - name: Query System
-        run: whoami
-        run: uname -a
-      - name: Test Print Variable
-        env:
-          TEST_VAR="Test Var"
-        run: |
-          echo "Variable: ${TEST_VAR}"
+    - name: Set up Included Actions
+      uses: actions/checkout@v2
+    - name: Query System
+      run: whoami
+      run: uname -a
+    - name: Test Print Variable
+      env:
+        TEST_VAR="Test Var"
+      run: |
+        echo "Variable: ${TEST_VAR}"
