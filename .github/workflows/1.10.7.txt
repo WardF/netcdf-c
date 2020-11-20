@@ -1,4 +1,4 @@
-name: 1.10.7
+name: 1-10-7
 dependencies:
   - hdf5=1.10.7
   - cmake
