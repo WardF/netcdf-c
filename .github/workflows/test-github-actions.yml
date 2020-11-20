@@ -18,6 +18,9 @@ jobs:
     - name: Directory Info
       run: pwd && ls
     - name: Install Conda
-      uses: matthewrmshin/conda-action@v1
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        args: conda env create --file .github/workflows/conda_req_1.10.7.yml
+        activate-environment: 1.10.7
+        environment-file: .github/workflows/conda_req_1.10.7.yml
+      run: |
+        conda list
