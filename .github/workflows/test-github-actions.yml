@@ -6,9 +6,10 @@ jobs:
     steps:
       - name: Set up Included Actions
         uses: actions/checkout@v2
-        env:
-          TEST_VAR="Test Var"
       - name: Query System
         run: whoami
         run: uname -a
-        run: echo "${TEST_VAR}"
+        env:
+          TEST_VAR="Test Var"
+        run: |
+          echo "Variable: ${TEST_VAR}"
