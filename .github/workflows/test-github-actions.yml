@@ -6,8 +6,9 @@ jobs:
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
-    - name: Query System
+    - name: Query User
       run: whoami
+    - name: Query System
       run: uname -a
     - name: Test Print Variable
       env:
