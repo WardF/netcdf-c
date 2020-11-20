@@ -11,6 +11,6 @@ jobs:
       run: uname -a
     - name: Test Print Variable
       env:
-        TEST_VAR="Test Var"
+        TEST_VAR: "Test Var"
       run: |
         echo "Variable: ${TEST_VAR}"
