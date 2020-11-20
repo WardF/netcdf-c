@@ -18,4 +18,4 @@ jobs:
     - name: Install Conda
       uses: matthewrmshin/conda-action@v1
       with:
-        args: conda env create --file conda_req_1.10.7.yml
+        args: conda env create --file ./conda_req_1.10.7.yml
