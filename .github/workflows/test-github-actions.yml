@@ -23,5 +23,5 @@ jobs:
         activate-environment: 1.10.7
         environment-file: .github/workflows/1.10.7.txt
     - name: Query Conda
-      run: |
-      conda list
+      shell: bash -l {0}
+      run: conda list
