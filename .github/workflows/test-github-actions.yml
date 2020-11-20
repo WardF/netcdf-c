@@ -1,18 +1,14 @@
 name: test-github-actions
 on: [push]
 jobs:
-  check-bats-version:
+  install-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: npm install -g bats
-      - run: bats -v
-  check-uname:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: whoami
-      - run: sudo apt update
-      - run: uname -a
+      - name: Set up Included Actions
+        - uses: actions/checkout@v2
+          env:
+            TEST_VAR="Test Var"
+      - name: Query System
+        run: whoami
+        run: uname -a
+        run: echo "${TEST_VAR}"
