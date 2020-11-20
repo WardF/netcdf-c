@@ -13,5 +13,5 @@ jobs:
     - name: Test Print Variable
       env:
         TEST_VAR: "Test Var"
-      run:
+      run: |
         echo "Variable: ${TEST_VAR}"
