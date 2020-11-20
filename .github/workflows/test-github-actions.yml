@@ -9,6 +9,7 @@ jobs:
       - name: Query System
         run: whoami
         run: uname -a
+      - name: Test Print Variable
         env:
           TEST_VAR="Test Var"
         run: |
