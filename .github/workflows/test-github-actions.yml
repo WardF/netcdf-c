@@ -21,7 +21,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: 1.10.7
-        # environment-file: .github/workflows/1.10.7.txt
+        environment-file: .github/workflows/1.10.7.txt
     - name: Query Conda
       shell: bash -l {0}
       run: conda list
