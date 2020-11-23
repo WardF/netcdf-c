@@ -39,4 +39,7 @@ jobs:
       run : ./configure
     - name: Run make
       shell: bash -l {0}
-      run : make -j
+      run : make -j && make check TESTS="" -j
+    - name: Run tests
+      shell: bash -l {0}
+      run: make check -j
