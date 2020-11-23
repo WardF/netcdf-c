@@ -7,7 +7,7 @@ jobs:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
-      steps:
+    steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
     - name: Query User
