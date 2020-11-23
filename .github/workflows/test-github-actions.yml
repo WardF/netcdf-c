@@ -7,6 +7,7 @@ jobs:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
         build: [ autotools ]
+        use_nc4: [ nc3, nc4 ]
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
@@ -35,13 +36,13 @@ jobs:
     - name : Run autoreconf
       shell: bash -l {0}
       run : autoreconf -if
-    - name : Configure
+    - name : Build and Run Tests
       shell: bash -l {0}
       if: matrix.build == 'autotools'
-      run : ./configure && make -j && make check TESTS="" -j && make check
-    - name: Run make
-      shell: bash -l {0}
-      run : make -j && make check TESTS="" -j
-    - name: Run tests
-      shell: bash -l {0}
-      run: make check -j
+      if: matrix.use_nc4 == 'nc3'
+      env:
+        ENABLE_NC4: --disable-netcdf-4
+      if: matrix.use_nc4 == 'nc4'
+      env:
+        ENABLE_NC4: --enable-netcdf-4
+      run : ./configure ${ENABLE_NC4} && make -j && make check TESTS="" -j && make check -j
