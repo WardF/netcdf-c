@@ -7,10 +7,9 @@ jobs:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
+    env:
+      ENABLE_NC4: --enable-netcdf-4
     steps:
-    - name: Set up default environment variables.
-      env:
-        ENABLE_NC4: --enable-netcdf-4
     - name: Set up Included Actions
       uses: actions/checkout@v2
     - name: Query User
