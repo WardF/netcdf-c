@@ -10,22 +10,17 @@ jobs:
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
-    - name: Query User
-      run: whoami
-    - name: Query System
-      run: uname -a
-    - name: Test Print Variable
-      env:
-        TEST_VAR: "Test Var"
-      run: |
-        echo "Variable: ${TEST_VAR}"
-    - name: Directory Info
-      run: pwd && ls
     - name: Install Conda ${{ matrix.hdf5 }}
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: ${{ matrix.hdf5 }}
         environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
+    - name: Query User
+      run: whoami
+    - name: Query System
+      run: uname -a
+    - name: Directory Info
+      run: pwd && ls
     - name: Query Conda
       shell: bash -l {0}
       run: conda list
@@ -39,6 +34,12 @@ jobs:
       if: matrix.use_nc4 == 'nc3'
     - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc4'
-    - name : Build and Run Tests
+    - name: Configure
       shell: bash -l {0}
       run: ./configure ${ENABLE_NC4}
+    - name: Build
+      shell: bash -l {0}
+      run: make -j && make check TESTS="" -j
+    - name: Test
+      shell: bash -l {0}
+      run: make check -j
