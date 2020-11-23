@@ -17,22 +17,6 @@ jobs:
         activate-environment: ${{ matrix.hdf5 }}
         environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
 
-    #- name: Query User
-    #  run: whoami
-    #- name: Query System
-    #  run: uname -a
-    #- name: Directory Info
-    #  run: pwd && ls
-    #- name: Query Conda
-    #  shell: bash -l {0}
-    #  run: conda list
-    #- name: Query HDF5
-    #  shell: bash -l {0}
-    #  run: which h5dump
-    #- name: Run autoreconf
-    #  shell: bash -l {0}
-    #  run: autoreconf -if
-
 ###
 # Set environmental variables (for configuring)
 ###
@@ -72,7 +56,7 @@ jobs:
 #####
 
   cmake:
-    runs-on: [ ubuntu-latest, macos-latest ]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
