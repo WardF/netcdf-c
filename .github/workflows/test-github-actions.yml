@@ -1,12 +1,11 @@
 name: test-github-actions
 on: [push]
 jobs:
-  test-netcdf:
+  test-netcdf-autotools:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
-        build: [ autotools ]
         use_nc4: [ nc3, nc4 ]
     steps:
     - name: Set up Included Actions
@@ -38,8 +37,7 @@ jobs:
       run : autoreconf -if
     - name : Build and Run Tests
       shell: bash -l {0}
-      if: matrix.build == 'autotools'
-      if: matrix.use_nc4 == 'nc3'
+      if: matrix.use_nc3 == 'nc3'
       env:
         ENABLE_NC4: --disable-netcdf-4
       if: matrix.use_nc4 == 'nc4'
