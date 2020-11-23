@@ -107,14 +107,14 @@ jobs:
 # Set environmental variables (for configuring)
 ###
 
-    - run: echo "ENABLE_NC4='ENABLE_NETCDF_4=OFF'" >> $GITHUB_ENV
+    - run: echo "ENABLE_NC_NC4=OFF" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc3'
-    - run: echo "ENABLE_NC4='ENABLE_NETCDF_4=ON'" >> $GITHUB_ENV
+    - run: echo "ENABLE_NC_NC4=ON" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc4'
 
-    - run: echo "ENABLE_DAP='ENABLE_DAP=OFF'" >> $GITHUB_ENV
+    - run: echo "ENABLE_NC_DAP=OFF'" >> $GITHUB_ENV
       if: matrix.use_dap == 'dap_off'
-    - run: echo "ENABLE_DAP=ENABLE_DAP=ON'" >> $GITHUB_ENV
+    - run: echo "ENABLE_NC_DAP=ON'" >> $GITHUB_ENV
       if: matrix.use_dap == 'dap_on'
 
 ###
@@ -129,7 +129,7 @@ jobs:
     #  run: pwd && ls && ls ..
     - name: cmake
       shell: bash -l {0}
-      run: cd build && cmake .. -D${ENABLE_NC4} -D${ENABLE_DAP}
+      run: cd build && cmake .. -DENABLE_NETCDF_4=${ENABLE_NC_NC4} -DENABLE_DAP=${ENABLE_NC_DAP}
     - name: build
       shell: bash -l {0}
       run: cd build && make -j
