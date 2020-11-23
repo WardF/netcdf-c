@@ -1,9 +1,6 @@
 name: test-github-actions
 on: [push]
 jobs:
-  defaults:
-    run:
-      shell: bash
   install-dependencies:
     runs-on: ubuntu-latest
     steps:
