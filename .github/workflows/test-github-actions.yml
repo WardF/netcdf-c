@@ -16,21 +16,26 @@ jobs:
       with:
         activate-environment: ${{ matrix.hdf5 }}
         environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
-    - name: Query User
-      run: whoami
-    - name: Query System
-      run: uname -a
-    - name: Directory Info
-      run: pwd && ls
-    - name: Query Conda
-      shell: bash -l {0}
-      run: conda list
-    - name: Query HDF5
-      shell: bash -l {0}
-      run: which h5dump
-    - name: Run autoreconf
-      shell: bash -l {0}
-      run: autoreconf -if
+
+    #- name: Query User
+    #  run: whoami
+    #- name: Query System
+    #  run: uname -a
+    #- name: Directory Info
+    #  run: pwd && ls
+    #- name: Query Conda
+    #  shell: bash -l {0}
+    #  run: conda list
+    #- name: Query HDF5
+    #  shell: bash -l {0}
+    #  run: which h5dump
+    #- name: Run autoreconf
+    #  shell: bash -l {0}
+    #  run: autoreconf -if
+
+###
+# Set environmental variables (for configuring)
+###
 
     - run: echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc3'
@@ -42,6 +47,9 @@ jobs:
     - run: echo "ENABLE_DAP=--enable-dap" >> $GITHUB_ENV
       if: matrix.use_dap == 'dap_on'
 
+###
+# Configure and Build and Run Tests
+###
 
     - name: Configure
       shell: bash -l {0}
