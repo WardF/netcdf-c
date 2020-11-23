@@ -3,6 +3,9 @@ on: [push]
 jobs:
   install-dependencies:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        hdf5: [ 1.8.20 1.10.7 ]
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
@@ -17,25 +20,14 @@ jobs:
         echo "Variable: ${TEST_VAR}"
     - name: Directory Info
       run: pwd && ls
-    - name: Install Conda 1.8.20
+    - name: Install Conda ${{ matrix.hdf5 }}
       uses: conda-incubator/setup-miniconda@v2
       with:
-        activate-environment: 1.8.20
-        environment-file: .github/workflows/1.8.20.txt
-    - name: Install Conda 1.10.7
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        activate-environment: 1.10.7
-        environment-file: .github/workflows/1.10.7.txt
+        activate-environment: ${{ matrix.hdf5 }}
+        environment-file: .github/workflows/${{ matrix.hdf5 }}.txt
     - name: Query Conda
       shell: bash -l {0}
       run: conda list
-    - name: Deactivate Conda
-      shell: bash -l {0}
-      run: conda deactivate
-#   - name: Activate Conda
- #     shell: bash -l {0}
- #     run: conda activate 1.10.7
     - name : Query HDF5
       shell: bash -l {0}
       run : which h5dump
