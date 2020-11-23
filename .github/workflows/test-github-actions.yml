@@ -51,6 +51,9 @@ jobs:
 # Configure and Build and Run Tests
 ###
 
+    - name: Autoreconf
+      shell: bash -l {0}
+      run: autoreconf -if
     - name: Configure
       shell: bash -l {0}
       run: ./configure ${ENABLE_NC4_AC} ${ENABLE_DAP}
