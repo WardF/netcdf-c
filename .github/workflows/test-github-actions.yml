@@ -25,3 +25,7 @@ jobs:
     - name: Query Conda
       shell: bash -l {0}
       run: conda list
+    - name: Activate Conda
+      run: conda activate 1.10.7
+    - name : Query HDF5
+      run : which h5dump
