@@ -47,6 +47,7 @@ jobs:
     - name: Test
       shell: bash -l {0}
       run: make check -j
+
 #####
 # End Autotools Testing
 #####
@@ -90,6 +91,7 @@ jobs:
 ###
 # Set environmental variables (for configuring)
 ###
+    - run: echo "CTEST_OUTPUT_ON_FAILURE=1" >> $GITHUB_ENV
 
     - run: echo "ENABLE_NC_NC4=OFF" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc3'
