@@ -6,6 +6,7 @@ jobs:
     strategy:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
+        build: [ autotools ]
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
@@ -34,9 +35,10 @@ jobs:
     - name : Run autoreconf
       shell: bash -l {0}
       run : autoreconf -if
-    - name : Run configure
+    - name : Configure
       shell: bash -l {0}
-      run : ./configure
+      if: matrix.build == 'autotools'
+      run : ./configure && make -j && make check TESTS="" -j && make check
     - name: Run make
       shell: bash -l {0}
       run : make -j && make check TESTS="" -j
