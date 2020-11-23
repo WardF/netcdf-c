@@ -7,12 +7,7 @@ jobs:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
-    env:
-      ENABLE_NC4: --enable-netcdf-4
-      if: matrix.use_nc4 == 'nc4'
-      ENABLE_NC4: --disable-netcdf-4
-      if: matrix.use_nc4 == 'nc3'
-    steps:
+      steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
     - name: Query User
@@ -42,5 +37,7 @@ jobs:
       run: autoreconf -if
     - run: echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc3'
+    - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
+      if: matrix.use_nc4 == 'nc4'
     - name : Build and Run Tests
       run: ./configure ${ENABLE_NC4}
