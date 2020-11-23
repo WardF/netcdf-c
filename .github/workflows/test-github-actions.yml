@@ -124,15 +124,15 @@ jobs:
     - name: Create build directory.
       shell: bash -l {0}
       run: mkdir build && cd build && pwd
-    - name: Sanity Check
-      shell: bash -l {0}
-      run: pwd && ls && ls ..
+    #- name: Sanity Check
+    #  shell: bash -l {0}
+    #  run: pwd && ls && ls ..
     - name: cmake
       shell: bash -l {0}
-      run: cmake .. -D${ENABLE_NC4} -D${ENABLE_DAP}
+      run: cd build && cmake .. -D${ENABLE_NC4} -D${ENABLE_DAP}
     - name: build
       shell: bash -l {0}
-      run: make -j
+      run: cd build && make -j
     - name: Test
       shell: bash -l {0}
-      run: make test -j
+      run: cd build && make test -j
