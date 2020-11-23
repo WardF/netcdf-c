@@ -1,7 +1,7 @@
 name: test-github-actions
 on: [push]
 jobs:
-  install-dependencies:
+  test-netcdf:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,3 +31,6 @@ jobs:
     - name : Query HDF5
       shell: bash -l {0}
       run : which h5dump
+    - name : Run autoreconf
+      shell: bash -l {0}
+      run : autoreconf -if
