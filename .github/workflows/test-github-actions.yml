@@ -40,6 +40,6 @@ jobs:
     - name : Build and Run Tests
       shell: bash -l {0}
       if: matrix.use_nc3 == 'nc3'
-      run : ./configure ${{ ENABLE_NC4 }}
+      run : ./configure ${ENABLE_NC4}
       env:
         ENABLE_NC4: --disable-netcdf-4
