@@ -40,4 +40,5 @@ jobs:
     - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc4'
     - name : Build and Run Tests
+      shell: bash -l {0}
       run: ./configure ${ENABLE_NC4}
