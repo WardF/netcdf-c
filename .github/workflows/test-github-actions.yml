@@ -34,3 +34,9 @@ jobs:
     - name : Run autoreconf
       shell: bash -l {0}
       run : autoreconf -if
+    - name : Run configure
+      shell: bash -l {0}
+      run : ./configure
+    - name: Run make
+      shell: bash -l {0}
+      run : make -j
