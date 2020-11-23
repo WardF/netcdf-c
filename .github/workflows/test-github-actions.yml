@@ -24,7 +24,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: ${{ matrix.hdf5 }}
-        environment-file: .github/workflows/${{ matrix.hdf5 }}.txt
+        environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
     - name: Query Conda
       shell: bash -l {0}
       run: conda list
