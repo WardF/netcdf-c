@@ -1,13 +1,13 @@
 name: test-github-actions
 on: [push]
 jobs:
-  nc-autotools:
+  nc-testing:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [ ac, cmake ]
         hdf5: [ 1.8.20, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
+        use_dap: [ dap_on, dap_off ]
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
@@ -31,19 +31,24 @@ jobs:
     - name: Run autoreconf
       shell: bash -l {0}
       run: autoreconf -if
-    - run: echo "ENABLE_NC4_AC=--disable-netcdf-4" >> $GITHUB_ENV && echo "ENABLE_NC4_CMAKE=ENABLE_NETCDF_4=OFF" >> $GITHUB_ENV
+
+    - run: echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc3'
-    - run: echo "ENABLE_NC4_AC=--enable-netcdf-4" >> $GITHUB_ENV && echo "ENABLE_NC4_CMAKE=ENABLE_NETCDF_4=ON" >> $GITHUB_ENV
+    - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc4'
+
+    - run: echo "ENABLE_DAP=--disable-dap" >> $GITHUB_ENV
+      if: matrix.use_dap == 'dap_off'
+    - run: echo "ENABLE_DAP=--enable-dap" >> $GITHUB_ENV
+      if: matrix.use_dap == 'dap_on'
+
+
     - name: Configure
       shell: bash -l {0}
-      run: ./configure ${ENABLE_NC4_AC}
-      if: matrix.build_type == 'ac'
+      run: ./configure ${ENABLE_NC4_AC} ${ENABLE_DAP}
     - name: Build
       shell: bash -l {0}
       run: make -j && make check TESTS="" -j
-      if: matrix.build_type == 'ac'
     - name: Test
       shell: bash -l {0}
       run: make check -j
-      if: matrix.build_type == 'ac'
