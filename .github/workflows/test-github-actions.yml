@@ -31,15 +31,14 @@ jobs:
     - name: Query Conda
       shell: bash -l {0}
       run: conda list
-    - name : Query HDF5
+    - name: Query HDF5
       shell: bash -l {0}
-      run : which h5dump
-    - name : Run autoreconf
+      run: which h5dump
+    - name: Run autoreconf
       shell: bash -l {0}
-      run : autoreconf -if
-    - name : Build and Run Tests
-      shell: bash -l {0}
-      if: matrix.use_nc4 == 'nc3'
-      run : ./configure ${ENABLE_NC4}
-      env:
+      run: autoreconf -if
+    - env:
         ENABLE_NC4: --disable-netcdf-4
+      if: matrix.use_nc4 == 'nc3'
+    - name : Build and Run Tests
+      run: ./configure ${ENABLE_NC4}
