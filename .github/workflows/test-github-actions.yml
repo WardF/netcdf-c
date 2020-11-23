@@ -72,7 +72,7 @@ jobs:
 #####
 
   cmake:
-    runs-on: ubuntu-latest
+    runs-on: [ ubuntu-latest, macos-latest ]
     strategy:
       matrix:
         hdf5: [ 1.8.20, 1.10.7 ]
