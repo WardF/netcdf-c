@@ -37,8 +37,7 @@ jobs:
     - name: Run autoreconf
       shell: bash -l {0}
       run: autoreconf -if
-    - env:
-        ENABLE_NC4: --disable-netcdf-4
+    - run: echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
       if: matrix.use_nc4 == 'nc3'
     - name : Build and Run Tests
       run: ./configure ${ENABLE_NC4}
