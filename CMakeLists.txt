@@ -314,6 +314,7 @@ SET(DEFAULT_CHUNKS_IN_CACHE 10 CACHE STRING "Default number of chunks in cache."
 SET(CHUNK_CACHE_SIZE 16777216 CACHE STRING "Default Chunk Cache Size.")
 SET(CHUNK_CACHE_NELEMS 4133 CACHE STRING "Default maximum number of elements in cache.")
 SET(CHUNK_CACHE_PREEMPTION 0.75 CACHE STRING "Default file chunk cache preemption policy for HDf5 files(a number between 0 and 1, inclusive.")
+SET(CHUNK_CACHE_SIZE_NCZARR 4194304 CACHE STRING "Default NCZarr Chunk Cache Size.")
 SET(MAX_DEFAULT_CACHE_SIZE 67108864 CACHE STRING "Default maximum cache size.")
 SET(NETCDF_LIB_NAME "" CACHE STRING "Default name of the netcdf library.")
 SET(TEMP_LARGE "." CACHE STRING "Where to put large temp files if large file tests are run.")
@@ -566,6 +567,9 @@ IF(ENABLE_NETCDF_4 AND NOT ENABLE_LOGGING AND ENABLE_SET_LOG_LEVEL_FUNC)
   SET(ENABLE_SET_LOG_LEVEL ON)
 ENDIF()
 
+# This has multiversion capability
+SET(HAS_MULTIFILTERS yes CACHE BOOL "")
+
 # Option to allow for strict null file padding.
 # See https://github.com/Unidata/netcdf-c/issues/657 for more information
 OPTION(ENABLE_STRICT_NULL_BYTE_HEADER_PADDING "Enable strict null byte header padding." OFF)
@@ -779,7 +783,7 @@ IF(USE_HDF5)
     SET(ENABLE_NCDUMPCHUNKS ON)
   ENDIF()
 
-  # Check to see if this is hdf5-1.10.6 or later.
+  # Record if ROS3 Driver is available
   IF(HAS_HDF5_ROS3)
     SET(ENABLE_HDF5_ROS3 ON)
   ENDIF()
@@ -820,6 +824,19 @@ IF(USE_HDF5)
 
   #option to include HDF5 High Level header file (hdf5_hl.h) in case we are not doing a make install
   INCLUDE_DIRECTORIES(${HDF5_HL_INCLUDE_DIR})
+
+  # Check to see if we have libcurl 7.66 or later
+  CHECK_C_SOURCE_COMPILES("
+  #include <H5public.h>
+  int main() {
+#if (H5_VERS_MAJOR*10000 + H5_VERS_MINOR*100 + H5_VERS_RELEASE < 11006)
+      choke me;
+#endif
+  }" HDF5_VERSION_1106)
+
+  IF(HDF5_VERSION_1106)
+   SET(HDF5_UTF8_PATHS ON)
+  ENDIF()
 
 ENDIF(USE_HDF5)
 
@@ -962,24 +979,36 @@ IF(NOT WIN32)
 ENDIF()
 
 # Options to Extend NCZarr support
-OPTION(ENABLE_S3_SDK "Enable Search for AWS libraries." OFF)
-OPTION(ENABLE_S3_TESTS "Enable NCZarr S3 tests." OFF)
+OPTION(ENABLE_NCZARR_S3 "Enable NCZarr S3 support." OFF)
+OPTION(ENABLE_NCZARR_S3_TESTS "Enable NCZarr S3 tests." OFF)
 
-IF(NOT ENABLE_S3_SDK)
-  IF(ENABLE_S3_TESTS)
-     message(WARNING "DISABLE_S3_SDK => DISABLE_S3_TESTS")
-     SET(ENABLE_S3_TESTS OFF CACHE BOOL "S3 tests" FORCE)
-  ENDIF()
+IF(ENABLE_NCZARR_S3_TESTS AND NOT ENABLE_NCZARR_S3)
+  message(FATAL_ERROR "NCZarr S3 support is disabled; please specify option -DENABLE_NCZARR_S3_TESTS=no")
+  SET(ENABLE_NCZARR_S3_TESTS OFF CACHE BOOL "NCARR S3 TESTS" FORCE)  
 ENDIF()
 
-IF(ENABLE_S3_SDK)
 # See if aws-s3-sdk is available
+# But only if enabled
+IF(ENABLE_NCZARR_S3)
 find_package(AWSSDK REQUIRED)
 set(SERVICE s3)
 AWSSDK_DETERMINE_LIBS_TO_LINK(SERVICE AWSSDK_LINK_LIBRARIES)
-IF(NOT AWSSDK_FOUND)
+IF(AWSSDK_FOUND)
+  SET(ENABLE_S3_SDK ON CACHE BOOL "S3 SDK" FORCE)  
+ELSE()
   SET(ENABLE_S3_SDK OFF CACHE BOOL "S3 SDK" FORCE)
 ENDIF()
+ELSE(ENABLE_NCZARR_S3)
+# Unconditionally disable
+SET(ENABLE_S3_SDK OFF CACHE BOOL "S3 SDK" FORCE)
+ENDIF(ENABLE_NCZARR_S3)
+
+IF(NOT ENABLE_S3_SDK)
+  IF(ENABLE_NCZARR_S3 OR ENABLE_NCZARR_S3_TESTS)
+    message(FATAL_ERROR "AWS S3 libraries not found; please specify option DENABLE_NCZARR_S3=NO")
+    SET(ENABLE_NCZARR_S3 OFF CACHE BOOL "NCZARR S3 support" FORCE)
+    SET(ENABLE_NCZARR_S3_TESTS OFF CACHE BOOL "S3 tests" FORCE)
+  ENDIF()
 ENDIF()
 
 ##
@@ -1384,6 +1413,7 @@ CHECK_INCLUDE_FILE("ftw.h"  HAVE_FTW_H)
 CHECK_INCLUDE_FILE("libgen.h" HAVE_LIBGEN_H)
 CHECK_INCLUDE_FILE("execinfo.h" HAVE_EXECINFO_H)
 CHECK_INCLUDE_FILE("dirent.h" HAVE_DIRENT_H)
+CHECK_INCLUDE_FILE("time.h" HAVE_TIME_H)
 
 # Symbol Exists
 CHECK_SYMBOL_EXISTS(isfinite "math.h" HAVE_DECL_ISFINITE)
@@ -1465,12 +1495,17 @@ ENDIF(SIZEOF_UINTPTR_T)
 # __int64 is used on Windows for large file support.
 CHECK_TYPE_SIZE("__int64"   SIZEOF___INT_64)
 CHECK_TYPE_SIZE("int64_t"   SIZEOF_INT64_T)
-CHECK_TYPE_SIZE("uint64_t"  SIZEOF_UINT64_T)
+CHECK_TYPE_SIZE("uint64"  SIZEOF_UINT64)
 CHECK_TYPE_SIZE("unsigned char"      SIZEOF_UCHAR)
 CHECK_TYPE_SIZE("unsigned short int" SIZEOF_UNSIGNED_SHORT_INT)
 CHECK_TYPE_SIZE("unsigned int"       SIZEOF_UNSIGNED_INT)
 CHECK_TYPE_SIZE("long long"          SIZEOF_LONGLONG)
 CHECK_TYPE_SIZE("unsigned long long" SIZEOF_ULONGLONG)
+
+CHECK_TYPE_SIZE("uint64_t"  SIZEOF_UINT64_T)
+IF(SIZEOF_UINT64_T)
+  SET(HAVE_UINT64_T TRUE)
+ENDIF(SIZEOF_UINT64_T)
 
 # On windows systems, we redefine off_t as __int64
 # to enable LFS. This is true on 32 and 64 bit system.s
@@ -2076,7 +2111,7 @@ is_enabled(ENABLE_ERANGE_FILL HAS_ERANGE_FILL)
 is_enabled(HAVE_H5Z_SZIP HAS_SZLIB)
 is_enabled(HDF5_HAS_PAR_FILTERS HAS_PAR_FILTERS)
 is_enabled(ENABLE_NCZARR HAS_NCZARR)
-is_enabled(ENABLE_S3_TESTS DO_S3_TESTS)
+is_enabled(ENABLE_NCZARR_S3_TESTS DO_S3_TESTS)
 
 # Generate file from template.
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/libnetcdf.settings.in"
@@ -2120,6 +2155,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_common.in ${CMAKE_CURRENT_BINARY
 # Build nc_test4/findplugin.sh
 #####
 SET(ISCMAKE "1")
+IF(MSVC)
+SET(ISMSVC "1")
+ENDIF()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/nc_test4/findplugin.in ${CMAKE_CURRENT_BINARY_DIR}/nc_test4/findplugin.sh @ONLY NEWLINE_STYLE LF)
 
 IF(ENABLE_EXAMPLES)
