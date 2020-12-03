@@ -1,0 +1,48 @@
+###
+# Build hdf4, hdf5 dependencies and cache them.
+###
+
+name: build dependencies
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        hdf4: [ 4.2.15 ]
+        hdf5: [ 1.10.7 ]
+
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+
+      - name: Install System dependencies
+        shell: bash -l {0}
+        run: sudo apt install -y libaec-dev zlib1g-dev automake autoconf libcurl4-openssl-dev libjpeg-dev wget curl bzip2 m4 flex bison
+
+      - name: Cache libhdf4
+        id: cache-hdf4
+        uses: actions/cache@v2
+        with:
+          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
+
+
+      - name: Build libhdf4
+        if: steps.cache-hdf4.outputs.cache-hit != 'true'
+        run: |
+          set -x
+          wget https://support.hdfgroup.org/ftp/HDF/releases/HDF${{ matrix.hdf4 }}/src/hdf-${{ matrix.hdf4 }}.tar.bz2
+          tar -jxf hdf-${{ matrix.hdf4 }}.tar.bz2
+          pushd hdf-${{ matrix.hdf4 }}
+          ./configure --prefix=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} --disable-static --enable-shared --disable-fortran --disable-netcdf --with-szlib
+          make -j
+          make install -j
+          popd

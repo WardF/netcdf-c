@@ -38,7 +38,7 @@ doxygen*.tmp
 myhtml
 CMakeLists.txt.user
 scan-build
-.deps
+.*
 .libs
 *.zip
 Makefile
