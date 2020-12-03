@@ -20,8 +20,6 @@ jobs:
       shell: bash -l {0}
       run: sudo apt install -y ubuntu-dev-tools libtool autoconf automake bison bzip2 g++ m4 flex libcurl4-openssl-dev zlib1g-dev wget curl libjpeg-dev unzip patch libhdf5-dev
 
-    - name: Install libhdf4
-      shell: bash -
 ###
 # Set environmental variables (for configuring)
 ###
