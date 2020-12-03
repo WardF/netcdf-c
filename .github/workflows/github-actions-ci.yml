@@ -11,12 +11,14 @@ jobs:
     steps:
     - name: Set up Included Actions
       uses: actions/checkout@v2
-    - name: Install Conda ${{ matrix.hdf5 }}
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        activate-environment: ${{ matrix.hdf5 }}
-        environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
-
+    #- name: Install Conda ${{ matrix.hdf5 }}
+    #  uses: conda-incubator/setup-miniconda@v2
+    #  with:
+    #    activate-environment: ${{ matrix.hdf5 }}
+    #    environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
+    - name: Install Dependencies with apt
+      shell: bash -l {0}
+      run: apt install -y ubuntu-dev-tools libtool autoconf automake bison bzip2 g++ m4 flex libcurl4-openssl-dev zlib1g-dev wget curl libjpeg-dev unzip patch
 ###
 # Set environmental variables (for configuring)
 ###
