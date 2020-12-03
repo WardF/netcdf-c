@@ -28,14 +28,14 @@ jobs:
         run: sudo apt install -y libaec-dev zlib1g-dev automake autoconf libcurl4-openssl-dev libjpeg-dev wget curl bzip2 m4 flex bison
 
       - name: Cache libhdf4-${{ matrix.hdf4 }}
-        id: cache-hdf4-${{ matrix.hdf4 }}
+        id: cache-hdf4
         uses: actions/cache@v2
         with:
           path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
           key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
 
       - name: Build libhdf4-${{ matrix.hdf4 }}
-        if: steps.cache-hdf4-${{ matrix.hdf4 }}.outputs.cache-hit != 'true'
+        if: steps.cache-hdf4.outputs.cache-hit != 'true'
         run: |
           set -x
           wget https://support.hdfgroup.org/ftp/HDF/releases/HDF${{ matrix.hdf4 }}/src/hdf-${{ matrix.hdf4 }}.tar.bz2
@@ -48,7 +48,7 @@ jobs:
 
 
       - name: Cache libhdf5-${{ matrix.hdf5 }}
-        id: cache-hdf5-${{ matrix.hdf5 }}
+        id: cache-hdf5
         uses: actions/cache@v2
         with:
           path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
@@ -56,7 +56,7 @@ jobs:
 
 
       - name: Build libhdf5-${{ matrix.hdf5 }}
-        if: steps.cache-hdf5-${{ matrix.hdf5 }}.outputs.cache-hit != 'true'
+        if: steps.cache-hdf5.outputs.cache-hit != 'true'
         run: |
           set -x
           wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-${{ matrix.hdf5 }}/src/hdf5-${{ matrix.hdf5 }}.tar.bz2
