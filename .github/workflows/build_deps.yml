@@ -27,16 +27,15 @@ jobs:
         shell: bash -l {0}
         run: sudo apt install -y libaec-dev zlib1g-dev automake autoconf libcurl4-openssl-dev libjpeg-dev wget curl bzip2 m4 flex bison
 
-      - name: Cache libhdf4
-        id: cache-hdf4
+      - name: Cache libhdf4-${{ matrix.hdf4 }}
+        id: cache-hdf4-${{ matrix.hdf4 }}
         uses: actions/cache@v2
         with:
           path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
           key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
 
-
-      - name: Build libhdf4
-        if: steps.cache-hdf4.outputs.cache-hit != 'true'
+      - name: Build libhdf4-${{ matrix.hdf4 }}
+        if: steps.cache-hdf4-${{ matrix.hdf4 }}.outputs.cache-hit != 'true'
         run: |
           set -x
           wget https://support.hdfgroup.org/ftp/HDF/releases/HDF${{ matrix.hdf4 }}/src/hdf-${{ matrix.hdf4 }}.tar.bz2
@@ -46,3 +45,28 @@ jobs:
           make -j
           make install -j
           popd
+
+
+        id: cache-hdf5-${{ matrix.hdf5 }}
+        uses: actions/cache@v2
+        with:
+          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
+
+
+      - name: Build libhdf5-${{ matrix.hdf5 }}
+        if: steps.cache-hdf5-${{ matrix.hdf5 }}.outputs.cache-hit != 'true'
+        run: |
+          set -x
+          wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-${{ matrix.hdf5 }}/src/hdf5-${{ matrix.hdf5 }}.tar.bz2
+          tar -jxf hdf5-${{ matrix.hdf5 }}.tar.bz2
+          pushd hdf5-${{ matrix.hdf5 }}
+          ./configure --disable-static --enable-shared --prefix=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} --enable-hl --with-szlib
+          make -j
+          make install -j
+          popd
+
+
+      - name: Sanity Check
+        shell: bash -l {0}
+        run: ls ${HOME} && ls ${HOME}/environments
