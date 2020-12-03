@@ -18,7 +18,10 @@ jobs:
     #    environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
     - name: Install Dependencies with apt
       shell: bash -l {0}
-      run: sudo apt install -y ubuntu-dev-tools libtool autoconf automake bison bzip2 g++ m4 flex libcurl4-openssl-dev zlib1g-dev wget curl libjpeg-dev unzip patch
+      run: sudo apt install -y ubuntu-dev-tools libtool autoconf automake bison bzip2 g++ m4 flex libcurl4-openssl-dev zlib1g-dev wget curl libjpeg-dev unzip patch libhdf5-dev
+
+    - name: Install libhdf4
+      shell: bash -
 ###
 # Set environmental variables (for configuring)
 ###
@@ -75,24 +78,7 @@ jobs:
     #    environment-file: .github/workflows/conda-env/${{ matrix.hdf5 }}.txt
     - name: Install Dependencies with apt
       shell: bash -l {0}
-      run: sudo apt install -y ubuntu-dev-tools libtool autoconf automake bison bzip2 g++ m4 flex libcurl4-openssl-dev zlib1g-dev wget curl libjpeg-dev unzip patch
-
-
-    #- name: Query User
-    #  run: whoami
-    #- name: Query System
-    #  run: uname -a
-    #- name: Directory Info
-    #  run: pwd && ls
-    #- name: Query Conda
-    #  shell: bash -l {0}
-    #  run: conda list
-    #- name: Query HDF5
-    #  shell: bash -l {0}
-    #  run: which h5dump
-    #- name: Run autoreconf
-    #  shell: bash -l {0}
-    #  run: autoreconf -if
+      run: sudo apt install -y ubuntu-dev-tools libtool autoconf automake bison bzip2 g++ m4 flex libcurl4-openssl-dev zlib1g-dev wget curl libjpeg-dev unzip patch libhdf5-dev
 
 ###
 # Set environmental variables (for configuring)
