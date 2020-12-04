@@ -146,22 +146,22 @@ jobs:
 
       - name: Build Library and Utilities
         shell: bash -l {0}
-        run: make -j
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} make -j
         if: ${{ success() }}
 
       - name: Build Tests
         shell: bash -l {0}
-        run: make check TESTS="" -j
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} make check TESTS="" -j
         if: ${{ success() }}
 
       - name: Run Tests
         shell: bash -l {0}
-        run: make check -j
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} make check -j
         if: ${{ success() }}
 
       - name: Make Distcheck
         shell: bash -l {0}
-        run: make distcheck -j
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} make distcheck -j
 
   nc-cmake:
 
