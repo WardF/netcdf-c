@@ -75,4 +75,4 @@ jobs:
         shell: bash -l {0}
         run: ls ${HOME} && ls ${HOME}/environments
 
-      - run: echo "FOO: ${FOO}"
+      - run: echo "FOO: $FOO"
