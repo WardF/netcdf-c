@@ -76,7 +76,11 @@ jobs:
         run: ls ${HOME} && ls ${HOME}/environments
 
 
-      - name: Print FOO
+      - name: Where am I
         shell: bash -l {0}
-        run: |
-          echo Foo is $FOO
+        run: pwd && ls
+
+      #- name: Print FOO
+      #  shell: bash -l {0}
+      #  run: |
+      #    echo Foo is $FOO
