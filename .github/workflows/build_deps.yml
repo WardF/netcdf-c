@@ -152,3 +152,7 @@ jobs:
         shell: bash -l {0}
         run: make check -j
         if: ${{ success() }}
+
+      - name: Make Distcheck
+        shell: bash -l {0}
+        run: make distcheck -j
