@@ -106,3 +106,4 @@ jobs:
 
       - name: Check cmake
         shell: bash -l {0}
+        run: which cmake
