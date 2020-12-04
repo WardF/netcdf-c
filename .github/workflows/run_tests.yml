@@ -1,5 +1,5 @@
 ###
-# Build hdf4, hdf5 dependencies and cache them.
+# Build hdf4, hdf5 dependencies and cache them in a combined directory.
 ###
 
 name: Run netCDF Tests
