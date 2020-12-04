@@ -92,9 +92,13 @@ jobs:
       - run: echo "CFLAGS=-I${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/include" >> $GITHUB_ENV
       - run: echo "LDFLAGS=-L${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
       - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
-      - run: echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
+      - run: |
+          echo "ENABLE_HDF4=--disable-hdf4" >> $GITHUB_ENV
+          echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
         if: matrix.use_nc4 == 'nc3'
-      - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
+      - run: |
+          echo "ENABLE_HDF4=--enable-hdf4" >> $GITHUB_ENV
+          echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
         if: matrix.use_nc4 == 'nc4'
       - run: echo "ENABLE_DAP=--disable-dap" >> $GITHUB_ENV
         if: matrix.use_dap == 'dap_off'
@@ -133,7 +137,7 @@ jobs:
 
       - name: Configure
         shell: bash -l {0}
-        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./configure --enable-hdf4 ${ENABLE_NC4} ${ENABLE_DAP}
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./configure ${ENABLE_HDF4} ${ENABLE_NC4} ${ENABLE_DAP}
 
       - name: Look at config.log if error
         shell: bash -l {0}
@@ -188,9 +192,13 @@ jobs:
 
       - run: echo "CMAKE_PREFIX_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}" >> $GITHUB_ENV
       - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
-      - run: echo "ENABLE_NC4=OFF" >> $GITHUB_ENV
+      - run: |
+          echo "ENABLE_HDF4=OFF" >> $GITHUB_ENV
+          echo "ENABLE_NC4=OFF" >> $GITHUB_ENV
         if: matrix.use_nc4 == 'nc3'
-      - run: echo "ENABLE_NC4=ON" >> $GITHUB_ENV
+      - run: |
+          echo "ENABLE_HDF4=ON" >> $GITHUB_ENV
+          echo "ENABLE_NC4=ON" >> $GITHUB_ENV
         if: matrix.use_nc4 == 'nc4'
       - run: echo "ENABLE_DAP=OFF" >> $GITHUB_ENV
         if: matrix.use_dap == 'dap_off'
