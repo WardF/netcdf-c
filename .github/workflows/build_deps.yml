@@ -74,3 +74,9 @@ jobs:
       - name: Sanity Check
         shell: bash -l {0}
         run: ls ${HOME} && ls ${HOME}/environments
+
+
+      - name: Print FOO
+        shell: bash -l {0}
+        run: |
+          echo Foo is $FOO
