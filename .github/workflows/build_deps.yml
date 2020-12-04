@@ -137,3 +137,18 @@ jobs:
         shell: bash -l {0}
         run: cat config.log
         if: ${{ failure() }}
+
+      - name: Build Library and Utilities
+        shell: bash -l {0}
+        run: make -j
+        if: ${{ success() }}
+
+      - name: Build Tests
+        shell: bash -l {0}
+        run: make check TESTS="" -j
+        if: ${{ success() }}
+
+      - name: Run Tests
+        shell: bash -l {0}
+        run: make check -j
+        if: ${{ success() }}
