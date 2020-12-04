@@ -76,7 +76,4 @@ jobs:
         env:
           FOO: Bar
 
-      - name: Print Environment Variable
-        shell: bash -l {0}
-        run: |
-          echo "FOO: ${FOO}"
+      - run: echo $FOO
