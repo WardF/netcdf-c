@@ -131,10 +131,6 @@ jobs:
         shell: bash -l {0}
         run: autoreconf -if
 
-      - name: Print Summary
-        shell: bash -l {0}
-        run: cat libnetcdf.settings
-
       - name: Configure
         shell: bash -l {0}
         run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./configure --enable-hdf4 ${ENABLE_NC4} ${ENABLE_DAP}
@@ -143,6 +139,10 @@ jobs:
         shell: bash -l {0}
         run: cat config.log
         if: ${{ failure() }}
+
+      - name: Print Summary
+        shell: bash -l {0}
+        run: cat libnetcdf.settings
 
       - name: Build Library and Utilities
         shell: bash -l {0}
@@ -162,3 +162,90 @@ jobs:
       - name: Make Distcheck
         shell: bash -l {0}
         run: make distcheck -j
+
+  nc-cmake:
+
+    needs: build-deps
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        hdf4: [ 4.2.15 ]
+        hdf5: [ 1.8.21, 1.10.7 ]
+        use_nc4: [ nc3, nc4 ]
+        use_dap: [ dap_off, dap_on ]
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Install System dependencies
+        shell: bash -l {0}
+        run: sudo apt install -y libaec-dev zlib1g-dev automake autoconf libcurl4-openssl-dev libjpeg-dev wget curl bzip2 m4 flex bison cmake
+
+###
+# Set Environmental Variables
+###
+
+      - run: echo "CMAKE_PREFIX_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}" >> $GITHUB_ENV
+      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
+      - run: echo "ENABLE_NC4=OFF" >> $GITHUB_ENV
+        if: matrix.use_nc4 == 'nc3'
+      - run: echo "ENABLE_NC4=ON" >> $GITHUB_ENV
+        if: matrix.use_nc4 == 'nc4'
+      - run: echo "ENABLE_DAP=OFF" >> $GITHUB_ENV
+        if: matrix.use_dap == 'dap_off'
+      - run: echo "ENABLE_DAP=ON" >> $GITHUB_ENV
+        if: matrix.use_dap == 'dap_on'
+
+###
+# Fetch Cache
+###
+
+      - name: Fetch HDF4 Cache
+        id: cache-hdf4
+        uses: actions/cache@v2
+        with:
+          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
+
+      - name: Fetch HDF5 Cache
+        id: cache-hdf5
+        uses: actions/cache@v2
+        with:
+          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
+
+      - name: Check Cache
+        shell: bash -l {0}
+        run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5}}/lib
+
+###
+# Configure and build
+###
+
+      - name: Perform out-of-directory build
+        shell: bash -l {0}
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DENABLE_HDF4=TRUE -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DENABLE_DAP=${ENABLE_DAP} -DENABLE_NETCDF_4=${ENABLE_NETCDF_4}
+
+      - name: Print Summary
+        shell: bash -l {0}
+        run: |
+          cd build
+          cat libnetcdf.settings
+
+      - name: Build All
+        shell: bash -l {0}
+        run: |
+          cd build
+          make -j
+        if: ${{ success() }}
+
+      - name: Run Tests
+        shell: bash -l {0}
+        run: |
+          cd build
+          ctest -j
+        if: ${{ success() }}
