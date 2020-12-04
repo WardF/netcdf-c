@@ -25,31 +25,14 @@ jobs:
         shell: bash -l {0}
         run: sudo apt install -y libaec-dev zlib1g-dev automake autoconf libcurl4-openssl-dev libjpeg-dev wget curl bzip2 m4 flex bison cmake
 
-      - name: Cache libhdf4-${{ matrix.hdf4 }}
-        id: cache-hdf4
-        uses: actions/cache@v2
-        with:
-          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
-          key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
-
-      - name: Build libhdf4-${{ matrix.hdf4 }}
-        if: steps.cache-hdf4.outputs.cache-hit != 'true'
-        run: |
-          set -x
-          wget https://support.hdfgroup.org/ftp/HDF/releases/HDF${{ matrix.hdf4 }}/src/hdf-${{ matrix.hdf4 }}.tar.bz2
-          tar -jxf hdf-${{ matrix.hdf4 }}.tar.bz2
-          pushd hdf-${{ matrix.hdf4 }}
-          ./configure --prefix=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} --disable-static --enable-shared --disable-fortran --disable-netcdf --with-szlib
-          make -j
-          make install -j
-          popd
-
-
+        ###
+        # Installing libhdf4 and libhdf5
+        ###
       - name: Cache libhdf5-${{ matrix.hdf5 }}
         id: cache-hdf5
         uses: actions/cache@v2
         with:
-          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          path: ~/environments/${{ matrix.hdf5 }}
           key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
 
 
@@ -57,10 +40,17 @@ jobs:
         if: steps.cache-hdf5.outputs.cache-hit != 'true'
         run: |
           set -x
+          wget https://support.hdfgroup.org/ftp/HDF/releases/HDF4.2.15/src/hdf-4.2.15.tar.bz2
+          tar -jxf hdf-4.2.5.tar.bz2
+          pushd hdf-4.2.15
+          ./configure --prefix=${HOME}/environments/${{ matrix.hdf5 }} --disable-static --enable-shared --disable-fortran --disable-netcdf --with-szlib
+          make -j
+          make install -j
+          popd
           wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-$(echo ${{ matrix.hdf5 }} | cut -d. -f 1,2)/hdf5-${{ matrix.hdf5 }}/src/hdf5-${{ matrix.hdf5 }}.tar.bz2
           tar -jxf hdf5-${{ matrix.hdf5 }}.tar.bz2
           pushd hdf5-${{ matrix.hdf5 }}
-          ./configure --disable-static --enable-shared --prefix=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} --enable-hl --with-szlib
+          ./configure --disable-static --enable-shared --prefix=${HOME}/environments/${{ matrix.hdf5 }} --enable-hl --with-szlib
           make -j
           make install -j
           popd
@@ -89,9 +79,9 @@ jobs:
 # Set Environmental Variables
 ###
 
-      - run: echo "CFLAGS=-I${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/include" >> $GITHUB_ENV
-      - run: echo "LDFLAGS=-L${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
-      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
+      - run: echo "CFLAGS=-I${HOME}/environments/${{ matrix.hdf5 }}/include" >> $GITHUB_ENV
+      - run: echo "LDFLAGS=-L${HOME}/environments/${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
+      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
       - run: |
           echo "ENABLE_HDF4=--disable-hdf4" >> $GITHUB_ENV
           echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
@@ -109,23 +99,16 @@ jobs:
 # Fetch Cache
 ###
 
-      - name: Fetch HDF4 Cache
-        id: cache-hdf4
+      - name: Fetch HDF Cache
+        id: cache-hdf
         uses: actions/cache@v2
         with:
-          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
-          key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
-
-      - name: Fetch HDF5 Cache
-        id: cache-hdf5
-        uses: actions/cache@v2
-        with:
-          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          path: ~/environments/${{ matrix.hdf5 }}
           key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
 
       - name: Check Cache
         shell: bash -l {0}
-        run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5}}/lib
+        run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf5 }} && ls ${HOME}/environments/${{ matrix.hdf5}}/lib
 
 ###
 # Configure and build
@@ -190,8 +173,8 @@ jobs:
 # Set Environmental Variables
 ###
 
-      - run: echo "CMAKE_PREFIX_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/" >> $GITHUB_ENV
-      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
+      - run: echo "CMAKE_PREFIX_PATH=${HOME}/environments/${{ matrix.hdf5 }}/" >> $GITHUB_ENV
+      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
       - run: |
           echo "ENABLE_HDF4=OFF" >> $GITHUB_ENV
           echo "ENABLE_NC4=OFF" >> $GITHUB_ENV
@@ -209,23 +192,16 @@ jobs:
 # Fetch Cache
 ###
 
-      - name: Fetch HDF4 Cache
-        id: cache-hdf4
-        uses: actions/cache@v2
-        with:
-          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
-          key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
-
-      - name: Fetch HDF5 Cache
+      - name: Fetch HDF Cache
         id: cache-hdf5
         uses: actions/cache@v2
         with:
-          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          path: ~/environments/${{ matrix.hdf5 }}
           key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
 
       - name: Check Cache
         shell: bash -l {0}
-        run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5}}/lib
+        run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf5 }} && ls ${HOME}/environments/${{ matrix.hdf5}}/lib
 
 ###
 # Configure and build
