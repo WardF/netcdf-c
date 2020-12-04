@@ -62,7 +62,6 @@ jobs:
 
     strategy:
       matrix:
-        hdf4: [ 4.2.15 ]
         hdf5: [ 1.8.21, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
         use_dap: [ dap_off, dap_on ]
@@ -156,8 +155,7 @@ jobs:
 
     strategy:
       matrix:
-        hdf4: [ 4.2.15 ]
-        hdf5: [ 1.8.21, 1.10.7 ]
+         hdf5: [ 1.8.21, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
         use_dap: [ dap_off, dap_on ]
     steps:
@@ -186,6 +184,7 @@ jobs:
         if: matrix.use_dap == 'dap_off'
       - run: echo "ENABLE_DAP=ON" >> $GITHUB_ENV
         if: matrix.use_dap == 'dap_on'
+      - run: echo "CTEST_OUTPUT_ON_FAILURE=1" >> $GITHUB_ENV
 
 ###
 # Fetch Cache
