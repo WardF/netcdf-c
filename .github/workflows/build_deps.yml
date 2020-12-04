@@ -18,6 +18,9 @@ jobs:
         hdf5: [ 1.10.6, 1.10.7 ]
 
 
+    env:
+      FOO: BAR
+
     steps:
 
       - uses: actions/checkout@v2
@@ -72,8 +75,4 @@ jobs:
         shell: bash -l {0}
         run: ls ${HOME} && ls ${HOME}/environments
 
-      - name: Environment check
-        env:
-          FOO: Bar
-
-      - run: echo $FOO
+      - run: echo "FOO: ${FOO}"
