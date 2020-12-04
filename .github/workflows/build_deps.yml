@@ -8,7 +8,7 @@ on: [push]
 
 jobs:
 
-  nc-tests-linux:
+  build-deps:
 
     runs-on: ubuntu-latest
 
@@ -16,10 +16,6 @@ jobs:
       matrix:
         hdf4: [ 4.2.15 ]
         hdf5: [ 1.10.6, 1.10.7 ]
-
-
-    env:
-      FOO: BAR
 
     steps:
 
@@ -71,16 +67,41 @@ jobs:
           popd
 
 
-      - name: Sanity Check
+  nc-autotools:
+
+    needs: build-deps
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        hdf4: [ 4.2.15 ]
+        hdf5: [ 1.10.6, 1.10.7 ]
+
+    env:
+      CFLAGS: -I${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/include
+      LDFLAGS: -L${HOME}/environments/${{ matrix.hd4 }}-${{ matrix.hdf5 }}/lib
+      LD_LIBRARY_PATH: ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib
+
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Fetch HDF4 Cache
+        id: cache-hdf4
+        uses: actions/cache@v2
+        with:
+          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          key: hdf4-${{ runner.os }}-${{ matrix.hdf4 }}
+
+      - name: Fetch HDF5 Cache
+        id: cache-hdf5
+        uses: actions/cache@v2
+        with:
+          path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+          key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
+
+
+      - name: Check Cache
         shell: bash -l {0}
-        run: ls ${HOME} && ls ${HOME}/environments
-
-
-      - name: Where am I
-        shell: bash -l {0}
-        run: pwd && ls
-
-      #- name: Print FOO
-      #  shell: bash -l {0}
-      #  run: |
-      #    echo Foo is $FOO
+        run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
