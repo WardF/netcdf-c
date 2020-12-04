@@ -2,7 +2,7 @@
 # Build hdf4, hdf5 dependencies and cache them.
 ###
 
-name: build dependencies
+name: Run netCDF Tests
 
 on: [push]
 
