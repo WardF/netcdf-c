@@ -76,7 +76,7 @@ jobs:
         hdf4: [ 4.2.15 ]
         hdf5: [ 1.8.21, 1.10.7 ]
         use_nc4: [ nc3, nc4 ]
-
+        use_dap: [ dap_off, dap_on ]
     steps:
 
       - uses: actions/checkout@v2
@@ -96,6 +96,10 @@ jobs:
         if: matrix.use_nc4 == 'nc3'
       - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
         if: matrix.use_nc4 == 'nc4'
+      - run: echo "ENABLE_DAP=--disable-dap" >> $GITHUB_ENV
+        if: matrix.use_dap == 'dap_off'
+      - run: echo "ENABLE_DAP=--enable-dap" >> $GITHUB_ENV
+        if: matrix.use_dap == 'dap_on'
 
 ###
 # Fetch Cache
@@ -115,7 +119,6 @@ jobs:
           path: ~/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
           key: hdf5-${{ runner.os }}-${{ matrix.hdf5 }}
 
-
       - name: Check Cache
         shell: bash -l {0}
         run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }} && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5}}/lib
@@ -128,10 +131,13 @@ jobs:
         shell: bash -l {0}
         run: autoreconf -if
 
+      - name: Print Summary
+        shell: bash -l {0}
+        run: cat libnetcdf.settings
+
       - name: Configure
         shell: bash -l {0}
-        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./configure ${ENABLE_NC4}
-
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./configure --enable-hdf4 ${ENABLE_NC4} ${ENABLE_DAP}
 
       - name: Look at config.log if error
         shell: bash -l {0}
