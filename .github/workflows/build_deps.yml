@@ -126,4 +126,4 @@ jobs:
 
       - name: Configure
         shell: bash -l {0}
-        run: ${CFLAGS} ${LDFLAGS} ${LD_LIBRARY_PATH} ./configure ${ENABLE_NC4}
+        run: CFLAGS=${CFLAGS} LDFLAGS=${LDFLAGS} LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ./configure ${ENABLE_NC4}
