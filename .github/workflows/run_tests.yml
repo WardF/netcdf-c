@@ -190,7 +190,7 @@ jobs:
 # Set Environmental Variables
 ###
 
-      - run: echo "CMAKE_PREFIX_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}" >> $GITHUB_ENV
+      - run: echo "CMAKE_PREFIX_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/" >> $GITHUB_ENV
       - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
       - run: |
           echo "ENABLE_HDF4=OFF" >> $GITHUB_ENV
@@ -236,7 +236,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DENABLE_HDF4=${ENABLE_HDF4} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DENABLE_DAP=${ENABLE_DAP} -DENABLE_NETCDF_4=${ENABLE_NETCDF_4}
+          LD_LIBRARY_PATH=${LD_LIBRARY_PATH} cmake .. -DENABLE_HDF4=${ENABLE_HDF4} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DENABLE_DAP=${ENABLE_DAP} -DENABLE_NETCDF_4=${ENABLE_NETCDF_4}
 
       - name: Print Summary
         shell: bash -l {0}
@@ -248,12 +248,12 @@ jobs:
         shell: bash -l {0}
         run: |
           cd build
-          make -j
+          LD_LIBRARY_PATH=${LD_LIBRARY_PATH} make -j
         if: ${{ success() }}
 
       - name: Run Tests
         shell: bash -l {0}
         run: |
           cd build
-          ctest -j
+          LD_LIBRARY_PATH=${LD_LIBRARY_PATH} ctest -j .
         if: ${{ success() }}
