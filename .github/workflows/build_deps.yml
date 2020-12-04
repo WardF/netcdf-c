@@ -103,3 +103,6 @@ jobs:
       - name: Check Cache
         shell: bash -l {0}
         run: ls ${HOME}/environments && ls ${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}
+
+      - name: Check cmake
+        shell: bash -l {0}
