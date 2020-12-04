@@ -14,7 +14,6 @@ jobs:
 
     strategy:
       matrix:
-        hdf4: [ 4.2.15 ]
         hdf5: [ 1.8.21, 1.10.7 ]
 
     steps:
