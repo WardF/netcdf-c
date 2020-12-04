@@ -87,7 +87,7 @@ jobs:
 
       - run: echo "CFLAGS=-I${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/include" >> $GITHUB_ENV
       - run: echo "LDFLAGS=-L${HOME}/environments/${{ matrix.hd4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
-      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib"
+      - run: echo "LD_LIBRARY_PATH=${HOME}/environments/${{ matrix.hdf4 }}-${{ matrix.hdf5 }}/lib" >> $GITHUB_ENV
       - run: echo "ENABLE_NC4=--disable-netcdf-4" >> $GITHUB_ENV
         if: matrix.use_nc4 == 'nc3'
       - run: echo "ENABLE_NC4=--enable-netcdf-4" >> $GITHUB_ENV
@@ -126,4 +126,4 @@ jobs:
 
       - name: Configure
         shell: bash -l {0}
-        run: ./configure ${ENABLE_NC4}
+        run: ${CFLAGS} ${LDFLAGS} ${LD_LIBRARY_PATH} ./configure ${ENABLE_NC4}
