@@ -13,7 +13,7 @@ jobs:
 
   build-deps-osx:
 
-    runs-on: macos-11
+    runs-on: self-hosted
 
     strategy:
       matrix:
