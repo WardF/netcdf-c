@@ -28,7 +28,7 @@ See LICENSE.txt for license information.
 #include <curl/curl.h>
 #endif
 
-#ifdef ENABLE_S3_SDK
+#ifdef ENABLE_S3
 #include "ncs3sdk.h"
 #endif
 
@@ -81,9 +81,9 @@ NCDISPATCH_initialize(void)
     /* Capture $HOME */
     {
 #if defined(_WIN32) && !defined(__MINGW32__)
-        char* home = getenv("HOME");
-#else
         char* home = getenv("USERPROFILE");
+#else
+        char* home = getenv("HOME");
 #endif
         if(home == NULL) {
 	    /* use cwd */
@@ -95,7 +95,6 @@ NCDISPATCH_initialize(void)
         NCpathcanonical(home,&globalstate->home);
 	nullfree(home);
     }
-fprintf(stderr,">>> HOME=|%s|\n",globalstate->home); fflush(stderr);
  
     /* Capture $CWD */
     {

@@ -76,7 +76,7 @@ main()
          * dimension varies most slowly. */
         for (lat = 0; lat < LAT_LEN; lat++)
             for (lon = 0; lon < LON_LEN; lon++)
-                float_data_out[lat][lon] = -666.666;
+                float_data_out[lat][lon] = -666.666f;
 
         /* Create file and group. */
         if ((fileid = H5Fcreate(FILE_NAME, H5F_ACC_TRUNC, H5P_DEFAULT,
@@ -518,7 +518,7 @@ main()
                                                 "szip_and_zlib"};
 
             /* Open file and create group. */
-            sprintf(file_name, "%s_%s.h5", TEST_NAME, desc[f]);
+            snprintf(file_name, sizeof(file_name), "%s_%s.h5", TEST_NAME, desc[f]);
             if ((fileid = H5Fcreate(file_name, H5F_ACC_TRUNC, H5P_DEFAULT,
                                     H5P_DEFAULT)) < 0) ERR;
             if ((grpid = H5Gcreate1(fileid, GRP_NAME, 0)) < 0) ERR;

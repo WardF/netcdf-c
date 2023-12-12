@@ -121,11 +121,12 @@ give_var_secret_name(NC_VAR_INFO_T *var, const char *name)
      * clash. */
     if (strlen(name) + strlen(NON_COORD_PREPEND) > NC_MAX_NAME)
         return NC_EMAXNAME;
-    if (!(var->alt_name = malloc((strlen(NON_COORD_PREPEND) +
-                                   strlen(name) + 1) * sizeof(char))))
+    size_t alt_name_size = (strlen(NON_COORD_PREPEND) + strlen(name) + 1) *
+                           sizeof(char);
+    if (!(var->alt_name = malloc(alt_name_size)))
         return NC_ENOMEM;
 
-    sprintf(var->alt_name, "%s%s", NON_COORD_PREPEND, name);
+    snprintf(var->alt_name, alt_name_size, "%s%s", NON_COORD_PREPEND, name);
 
     return NC_NOERR;
 }
@@ -684,7 +685,7 @@ nc_def_var_extra(int ncid, int varid, int *shuffle, int *unused1,
         /* If there's a _FillValue attribute, delete it. */
         retval = NC4_HDF5_del_att(ncid, varid, _FillValue);
         if (retval && retval != NC_ENOTATT) return retval;
-	if((retval = nc_reclaim_data_all(ncid,var->type_info->hdr.id,var->fill_value,1))) return retval;
+	if((retval = NC_reclaim_data_all(h5->controller,var->type_info->hdr.id,var->fill_value,1))) return retval;
 	var->fill_value = NULL;
     }
 
@@ -1893,6 +1894,9 @@ NC4_get_vars(int ncid, int varid, const size_t *startp, const size_t *countp,
     void *bufr = NULL;
     int need_to_convert = 0;
     size_t len = 1;
+    int fixedlengthstring = 0;
+    hsize_t fstring_len = 0;
+    size_t fstring_count = 1;
 
     /* Find info for this file, group, and var. */
     if ((retval = nc4_hdf5_find_grp_h5_var(ncid, varid, &h5, &grp, &var)))
@@ -2089,14 +2093,21 @@ NC4_get_vars(int ncid, int varid, const size_t *startp, const size_t *countp,
             H5Tget_size(hdf5_type->hdf_typeid) > 1 &&
             !H5Tis_variable_str(hdf5_type->hdf_typeid))
         {
-            hsize_t fstring_len;
+	    size_t k;
 
             if ((fstring_len = H5Tget_size(hdf5_type->hdf_typeid)) == 0)
                 BAIL(NC_EHDFERR);
-            if (!(*(char **)data = malloc(1 + fstring_len)))
-                BAIL(NC_ENOMEM);
-            bufr = *(char **)data;
-        }
+	    /* Compute the total number of strings to read */
+            if (var->ndims) {
+                for (k = 0; k < var->ndims; k++) {
+                    fstring_count *= countp[k];
+		}
+	    }
+	    /* Allocate space for the all the strings */
+            if (!(bufr = malloc(fstring_len*fstring_count)))
+                    BAIL(NC_ENOMEM);
+	    fixedlengthstring = 1;
+	}
 
         /* Create the data transfer property list. */
         if ((xfer_plistid = H5Pcreate(H5P_DATASET_XFER)) < 0)
@@ -2149,6 +2160,24 @@ NC4_get_vars(int ncid, int varid, const size_t *startp, const size_t *countp,
         }
 #endif /* USE_PARALLEL4 */
     }
+
+    /* If we read a sequence of fixed length strings, then we need to convert to char* in memory */
+    if(fixedlengthstring) {
+	size_t k;
+	char** strvec = (char**)data;
+	char* p;
+	for(k=0;k < fstring_count;k++) {
+	    char* eol;
+	    if((p = (char*)malloc(1+fstring_len))==NULL) BAIL(NC_ENOMEM);
+	    memcpy(p,((char*)bufr)+(k*fstring_len),fstring_len);
+	    eol = p + fstring_len;
+	    *eol = '\0';
+	    strvec[k] = p; p = NULL;
+	}
+	free(bufr);
+	bufr = NULL;
+    }
+
     /* Now we need to fake up any further data that was asked for,
        using the fill values instead. First skip past the data we
        just read, if any. */
@@ -2177,35 +2206,11 @@ NC4_get_vars(int ncid, int varid, const size_t *startp, const size_t *countp,
         for (i = 0; i < fill_len; i++)
         {
 
-#ifdef SEPDATA
-            if (var->type_info->nc_type_class == NC_STRING)
-            {
-                if (*(char **)fillvalue)
-                {
-                    if (!(*(char **)filldata = strdup(*(char **)fillvalue)))
-                        BAIL(NC_ENOMEM);
-                }
-                else
-                    *(char **)filldata = NULL;
-            }
-            else if (var->type_info->nc_type_class == NC_VLEN)
-            {
-                if (fillvalue)
-                {
-                    memcpy(filldata,fillvalue,file_type_size);
-                } else {
-                    *(char **)filldata = NULL;
-                }
-            }
-            else
-                memcpy(filldata, fillvalue, file_type_size);
-#else
 	    {
 		/* Copy one instance of the fill_value */
-		if((retval = nc_copy_data(ncid,var->type_info->hdr.id,fillvalue,1,filldata)))
+		if((retval = NC_copy_data(h5->controller,var->type_info->hdr.id,fillvalue,1,filldata)))
 		    BAIL(retval);
 	    }
-#endif
             filldata = (char *)filldata + file_type_size;
 	}        
     }
@@ -2228,6 +2233,7 @@ NC4_get_vars(int ncid, int varid, const size_t *startp, const size_t *countp,
     }
     
 exit:
+    if(fixedlengthstring && bufr) free(bufr);
     if (file_spaceid > 0)
         if (H5Sclose(file_spaceid) < 0)
             BAIL2(NC_EHDFERR);
@@ -2407,7 +2413,7 @@ nc_set_var_chunk_cache_ints(int ncid, int varid, int size, int nelems,
         real_nelems = nelems;
 
     if (preemption >= 0)
-        real_preemption = preemption / 100.;
+        real_preemption = (float)(preemption / 100.);
 
     return NC4_HDF5_set_var_chunk_cache(ncid, varid, real_size, real_nelems,
                                         real_preemption);
