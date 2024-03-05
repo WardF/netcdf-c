@@ -2574,6 +2574,7 @@ existing classes or even new classes with specific responsibilities.</val>
 <ref refid="2a42fa9a-d82b-11ee-b4a3-26aad4395c25"/>
 <ref refid="499295ae-d82b-11ee-b4a3-26aad4395c25"/>
 <ref refid="66b60080-d82b-11ee-b4a3-26aad4395c25"/>
+<ref refid="e55cb4ba-d82b-11ee-b4a3-26aad4395c25"/>
 </reflist>
 </ownedPresentation>
 </Diagram>
@@ -3006,4 +3007,24 @@ existing classes or even new classes with specific responsibilities.</val>
 <ref refid="ee66c5ee-d828-11ee-92f3-26aad4395c25"/>
 </type>
 </Property>
+<AssociationItem id="e55cb4ba-d82b-11ee-b4a3-26aad4395c25">
+<diagram>
+<ref refid="d24c76b0-d828-11ee-92f3-26aad4395c25"/>
+</diagram>
+<horizontal>
+<val>0</val>
+</horizontal>
+<orthogonal>
+<val>0</val>
+</orthogonal>
+<preferred_aggregation>
+<val>shared</val>
+</preferred_aggregation>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 90.0, 713.0)</val>
+</matrix>
+<points>
+<val>[(0.0, 0.0), (0.0, 0.0)]</val>
+</points>
+</AssociationItem>
 </gaphor>
