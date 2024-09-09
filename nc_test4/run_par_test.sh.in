@@ -33,7 +33,7 @@ echo "Testing very simple parallel I/O with 4 processors..."
 @MPIEXEC@ -n 4 ./tst_parallel
 echo
 echo "Testing simple parallel I/O with 16 processors..."
-@MPIEXEC@ -n 16 ./tst_parallel3
+@MPIEXEC@ -n 16 --oversubscribe ./tst_parallel3 
 echo
 echo "num_proc   time(s)  write_rate(B/s)"
 @MPIEXEC@ -n 1 ./tst_parallel4
