@@ -1,0 +1,2 @@
+CPPFLAGS= CC=gcc CFLAGS= -fno-strict-aliasing LDFLAGS= LIBS=-lsz -lzstd -lxml2 -lcurl 
+CPPFLAGS=-I/usr/include/hdf5/serial CC=gcc CFLAGS= -fno-strict-aliasing LDFLAGS=-L/usr/lib/x86_64-linux-gnu/hdf5/serial LIBS=-lsz -lzstd -lxml2 -lcurl 

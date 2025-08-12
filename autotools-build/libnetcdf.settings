@@ -1,0 +1,62 @@
+# NetCDF C Configuration Summary
+==============================
+
+# General
+-------
+NetCDF Version:		4.10.0-development
+Dispatch Version:       5
+Configured On:		Tue Aug 12 20:27:29 UTC 2025
+Host System:		x86_64-pc-linux-gnu
+Build Directory: 	/home/runner/work/netcdf-c/netcdf-c/autotools-build
+Install Prefix:         /usr/local
+
+# Compiling Options
+-----------------
+C Compiler:		/usr/bin/gcc
+CFLAGS:			 -fno-strict-aliasing
+CPPFLAGS:		-I/usr/include/hdf5/serial
+LDFLAGS:		-L/usr/lib/x86_64-linux-gnu/hdf5/serial
+AM_CFLAGS:		
+AM_CPPFLAGS:		
+AM_LDFLAGS:		
+Shared Library:		yes
+Static Library:		yes
+Extra libraries:	-lhdf5_hl -lhdf5 -lm -lz -lsz -lzstd -lxml2 -lcurl 
+XML Parser:             libxml2
+Legacy Macros:          yes
+
+# Features
+--------
+Benchmarks:		no
+NetCDF-2 API:		yes
+HDF4 Support:		no
+HDF5 Support:		yes
+CDF5 Support:		yes
+NC-4 Parallel Support:	no
+PnetCDF Support:	no
+
+DAP2 Support:		yes
+DAP4 Support:		yes
+Byte-Range Support:	yes
+
+S3 Support:	        no
+S3 SDK:  	        none
+
+NCZarr Support:		yes
+NCZarr Zip Support:     no
+
+Diskless Support:	yes
+MMap Support:		no
+ERANGE Fill Support:	no
+Relaxed Boundary Check:	yes
+
+Plugins Enabled:        yes
+Plugin Install Dir:     
+Plugin Search Path:     /usr/local/hdf5/lib/plugin
+
+Quantization:		yes
+Logging:     		no
+SZIP Write Support:     yes
+Standard Filters:       bz2 deflate szip zstd
+ZSTD Support:           yes
+Parallel Filters:       yes
