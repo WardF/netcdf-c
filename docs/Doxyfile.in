@@ -982,17 +982,12 @@ INPUT                  = \
                          @abs_top_srcdir@/include/netcdf_filter.h \
                          \
                          @abs_top_srcdir@/docs/inmemory.md \
-                         @abs_top_srcdir@/docs/filters.md \
-                         @abs_top_srcdir@/docs/pluginpath.md \
                          @abs_top_srcdir@/docs/quantize.md \
                          @abs_top_srcdir@/docs/byterange.md \
                          @abs_top_srcdir@/docs/auth.md \
-                         @abs_top_srcdir@/docs/cloud.md \
-                         @abs_top_srcdir@/docs/nczarr.md \
                          @abs_top_srcdir@/docs/indexing.dox \
                          \
                          @abs_top_srcdir@/docs/internal.md \
-                         @abs_top_srcdir@/docs/dispatch.md \
                          @abs_top_srcdir@/docs/inmeminternal.dox \
                          @abs_top_srcdir@/docs/testserver.dox \
                          @abs_top_srcdir@/docs/notes.md \
@@ -1048,7 +1043,13 @@ INPUT                  = \
                          @abs_top_srcdir@/libsrc4/nc4dispatch.c \
                          @abs_top_srcdir@/libhdf5/nc4hdf.c \
                          @abs_top_srcdir@/libhdf5/nc4info.c \
-                         @abs_top_srcdir@/libnczarr/zarr.c
+                         @abs_top_srcdir@/libnczarr/zarr.c \
+                         \
+                         @abs_top_srcdir@/docs/cloud.md \
+                         @abs_top_srcdir@/docs/dispatch.md \
+                         @abs_top_srcdir@/docs/filters.md \
+                         @abs_top_srcdir@/docs/nczarr.md \
+                         @abs_top_srcdir@/docs/pluginpath.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
