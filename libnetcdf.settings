@@ -1,0 +1,62 @@
+# NetCDF C Configuration Summary
+==============================
+
+# General
+-------
+NetCDF Version:		4.10.0-development
+Dispatch Version:       5
+Configured On:		Wed Aug 13 22:50:45 UTC 2025
+Host System:		x86_64-pc-linux-gnu
+Build Directory: 	/home/runner/work/netcdf-c/netcdf-c
+Install Prefix:         /usr/local
+
+# Compiling Options
+-----------------
+C Compiler:		/usr/bin/gcc
+CFLAGS:			 -fno-strict-aliasing
+CPPFLAGS:		
+LDFLAGS:		
+AM_CFLAGS:		
+AM_CPPFLAGS:		
+AM_LDFLAGS:		
+Shared Library:		yes
+Static Library:		yes
+Extra libraries:	-lm -lz -lzstd -lxml2 
+XML Parser:             libxml2
+Legacy Macros:          yes
+
+# Features
+--------
+Benchmarks:		no
+NetCDF-2 API:		yes
+HDF4 Support:		no
+HDF5 Support:		no
+CDF5 Support:		yes
+NC-4 Parallel Support:	no
+PnetCDF Support:	no
+
+DAP2 Support:		no
+DAP4 Support:		no
+Byte-Range Support:	no
+
+S3 Support:	        no
+S3 SDK:  	        none
+
+NCZarr Support:		yes
+NCZarr Zip Support:     no
+
+Diskless Support:	yes
+MMap Support:		no
+ERANGE Fill Support:	no
+Relaxed Boundary Check:	yes
+
+Plugins Enabled:        yes
+Plugin Install Dir:     
+Plugin Search Path:     /usr/local/hdf5/lib/plugin
+
+Quantization:		yes
+Logging:     		no
+SZIP Write Support:     no
+Standard Filters:       bz2 deflate zstd
+ZSTD Support:           yes
+Parallel Filters:       no
