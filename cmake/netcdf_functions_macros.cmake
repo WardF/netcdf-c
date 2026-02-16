@@ -9,7 +9,11 @@ function(set_std_filter filter)
   if(NETCDF_ENABLE_FILTER_${upfilter})
   # Define a test flag for filter
     if(${filter}_FOUND)
-      include_directories(${${filter}_INCLUDE_DIRS})
+      # Use target-specific include directories instead of global ones
+      # Note: This assumes the netcdf target exists and is defined
+      if(TARGET netcdf)
+        target_include_directories(netcdf PRIVATE ${${filter}_INCLUDE_DIRS})
+      endif()
       set(NETCDF_ENABLE_${upfilter} TRUE CACHE BOOL "Enable ${upfilter}")
       set(HAVE_${upfilter} ON CACHE BOOL "Have ${upfilter}")
       set(FOUND_STD_FILTERS "${FOUND_STD_FILTERS} ${downfilter}" PARENT_SCOPE)
