@@ -1,4 +1,4 @@
-# This is part of Unidata's netCDF package. Copyright 2018, see the
+# This is part of Unidata's netCDF package. Copyright 2025, see the
 # COPYRIGHT file for more information.
 
 # Build the ZARR dispatch layer.

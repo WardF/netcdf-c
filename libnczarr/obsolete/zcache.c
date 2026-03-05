@@ -1,4 +1,4 @@
-/* Copyright 2018, University Corporation for Atmospheric
+/* Copyright 2025, University Corporation for Atmospheric
  * Research. See COPYRIGHT file for copying and redistribution
  * conditions. */
 

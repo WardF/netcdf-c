@@ -1,4 +1,4 @@
-/* Copyright 2005-2018 University Corporation for Atmospheric
+/* Copyright 2005-2025 University Corporation for Atmospheric
    Research/Unidata. */
 
 /**
