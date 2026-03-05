@@ -1,5 +1,5 @@
 /*********************************************************************
-*    COPYRIGHT 2025, UCAR/UNIDATA
+*    COPYRIGHT 2026, UCAR/UNIDATA
 *    SEE NETCDF/COPYRIGHT FILE FOR COPYING AND REDISTRIBUTION CONDITIONS.
 * ********************************************************************/
 

@@ -1,5 +1,5 @@
 /*********************************************************************
- *   Copyright 2025, UCAR/Unidata
+ *   Copyright 2026, UCAR/Unidata
  *   See netcdf/COPYRIGHT file for copying and redistribution conditions.
  *********************************************************************/
 #ifndef DAPUTIL_H

@@ -13,7 +13,7 @@ See \ref copyright file for more info.
 /*#define F*/
 
 /*********************************************************************
- *   Copyright 2025, UCAR/Unidata
+ *   Copyright 2026, UCAR/Unidata
  *   See netcdf/COPYRIGHT file for copying and redistribution conditions.
  *   $Header: /upc/share/CVS/netcdf-3/ncgen/dump.h,v 1.2 2010/04/04 19:39:44 dmh Exp $
  *********************************************************************/

@@ -1,4 +1,4 @@
-/* Copyright 2025, UCAR/Unidata and OPeNDAP, Inc.
+/* Copyright 2026, UCAR/Unidata and OPeNDAP, Inc.
    See the COPYRIGHT dap for more information. */
 
 /*
