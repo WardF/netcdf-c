@@ -23,21 +23,24 @@
 #
 # Use this file to override variables
 #
+# This is a TEMPLATE file. Copy this file to a new location and modify
+# the paths below to match your system configuration before including it.
+#
 
 # Where netcdf will be installed:
-set (CMAKE_INSTALL_PREFIX z:/software)
+# set (CMAKE_INSTALL_PREFIX /path/to/install/directory)
 
 # General root path to include and lib dirs:
-set (CMAKE_FIND_ROOT_PATH z:/software)
+# set (CMAKE_FIND_ROOT_PATH /path/to/common/prefix)
 
-# Location of HFD4, HDF5 and zlib
-set (ENV{HDF4_ROOT} "c:/Program Files/HDF Group/HDF4/4.2.7")
-set (ENV{HDF5_ROOT} "c:/Program Files/HDF Group/HDF5/1.8.8")
-set (ENV{ZLIB_ROOT} "$ENV{HDF5_ROOT}")
+# Location of HDF4, HDF5 and zlib (example Windows paths)
+# set (ENV{HDF4_ROOT} "c:/Program Files/HDF Group/HDF4/4.2.7")
+# set (ENV{HDF5_ROOT} "c:/Program Files/HDF Group/HDF5/1.8.8")
+# set (ENV{ZLIB_ROOT} "$ENV{HDF5_ROOT}")
 
 # Root directories of libs that are not in CMAKE_FIND_ROOT_PATH:
-#set (CURL_ROOT z:/software)
-#set (XDR_ROOT z:/software)
+# set (CURL_ROOT /path/to/curl)
+# set (XDR_ROOT /path/to/xdr)
 
 # Set build type can be: empty, Debug, Release, RelWithDebInfo or MinSizeRel
 set (CMAKE_BUILD_TYPE Release)
